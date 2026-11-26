@@ -1,0 +1,1 @@
+import{B as e}from"./runtime-core.esm-bundler-JmlPVij4.js";import{Ba as t,Ka as n,h as r,v as i}from"./index-CiWDiwUj.js";var a=n(({router:n})=>{r(),e(i,(e,r)=>{r&&!e&&n.currentRoute.value.matched.some(e=>e.meta.requiresAuth)&&n.replace({path:`/login`,query:{sesion:`terminada`}}).then(()=>{t&&window.location.reload()})})});export{a as default};

@@ -1,0 +1,1 @@
+import{Ka as e}from"./index-CiWDiwUj.js";import{a as t,n}from"./chart-pFFCpfy1.js";var r=e(()=>{n.register(...t),n.defaults.font.family=`"Nunito", ui-sans-serif, system-ui, sans-serif`,n.defaults.maintainAspectRatio=!1});export{r as default};

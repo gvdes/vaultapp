@@ -153,9 +153,31 @@ const solicitudes = computed(() =>
   ),
 )
 
-const copiarLink = () => {
-  navigator.clipboard.writeText(appUrl('/solicitar'))
-  toast('Link copiado al portapapeles.')
+const copiarLink = async () => {
+  const url = appUrl('/solicitar')
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url)
+    } else {
+      const textarea = document.createElement('textarea')
+      textarea.value = url
+      textarea.style.position = 'fixed'
+      textarea.style.left = '-9999px'
+      document.body.appendChild(textarea)
+      textarea.select()
+
+      const copiado = document.execCommand('copy')
+      textarea.remove()
+
+      if (!copiado) throw new Error('No se pudo copiar')
+    }
+
+    toast('Link copiado al portapapeles.')
+  } catch (error) {
+    console.error('Error al copiar:', error)
+    toast('No se pudo copiar el link.')
+  }
 }
 
 const handleCancelar = async (s) => {

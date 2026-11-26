@@ -229,10 +229,33 @@ function etiquetaReferencia(m) {
 }
 
 async function copiarClabe() {
+  const clabe = proveedor.value?.clabe ?? ''
+
+  if (!clabe) {
+    toast('No hay CLABE para copiar.', 'warning')
+    return
+  }
+
   try {
-    await navigator.clipboard.writeText(proveedor.value?.clabe ?? '')
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(clabe)
+    } else {
+      const textarea = document.createElement('textarea')
+      textarea.value = clabe
+      textarea.style.position = 'fixed'
+      textarea.style.left = '-9999px'
+      document.body.appendChild(textarea)
+      textarea.select()
+
+      const copiado = document.execCommand('copy')
+      textarea.remove()
+
+      if (!copiado) throw new Error('No se pudo copiar')
+    }
+
     toast('CLABE copiada.')
-  } catch {
+  } catch (error) {
+    console.error('Error al copiar CLABE:', error)
     toast('No se pudo copiar; selecciónala manualmente.', 'error')
   }
 }

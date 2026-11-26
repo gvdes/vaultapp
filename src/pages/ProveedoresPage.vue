@@ -221,10 +221,34 @@ async function reactivar() {
   }
 }
 async function copiarClabe() {
+  const clabe = seleccion.value?.clabe ?? ''
+
+  if (!clabe) {
+    toast('No hay CLABE para copiar.', 'warning')
+    return
+  }
+
   try {
-    await navigator.clipboard.writeText(seleccion.value?.clabe ?? '')
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(clabe)
+    } else {
+      const ta = document.createElement('textarea')
+      ta.value = clabe
+      ta.setAttribute('readonly', '')
+      ta.style.position = 'fixed'
+      ta.style.left = '-9999px'
+      document.body.appendChild(ta)
+      ta.select()
+
+      const ok = document.execCommand('copy')
+      ta.remove()
+
+      if (!ok) throw new Error('No se pudo copiar')
+    }
+
     toast('CLABE copiada.')
-  } catch {
+  } catch (error) {
+    console.error('Error al copiar CLABE:', error)
     toast('No se pudo copiar; selecciónala manualmente.', 'error')
   }
 }

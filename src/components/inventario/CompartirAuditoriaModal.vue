@@ -97,25 +97,31 @@ const mailUrl = computed(
 
 async function copiar() {
   try {
-    await navigator.clipboard.writeText(link.value)
-  } catch {
-    // Sin permiso de portapapeles (http, iframe…): selección manual como respaldo.
-    const ta = document.createElement('textarea')
-    ta.value = link.value
-    document.body.appendChild(ta)
-    ta.select()
-    try {
-      document.execCommand('copy')
-    } catch {
-      toast('No se pudo copiar; selecciona la liga y cópiala manualmente.', 'error')
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(link.value)
+    } else {
+      const ta = document.createElement('textarea')
+      ta.value = link.value
+      ta.setAttribute('readonly', '')
+      ta.style.position = 'fixed'
+      ta.style.left = '-9999px'
+      document.body.appendChild(ta)
+      ta.select()
+
+      const ok = document.execCommand('copy')
       ta.remove()
-      return
+
+      if (!ok) throw new Error('No se pudo copiar')
     }
-    ta.remove()
+
+    copiado.value = true
+    toast('Liga copiada.')
+    setTimeout(() => (copiado.value = false), 2500)
+
+  } catch (error) {
+    console.error('Error al copiar liga:', error)
+    toast('No se pudo copiar; selecciona la liga y cópiala manualmente.', 'error')
   }
-  copiado.value = true
-  toast('Liga copiada.')
-  setTimeout(() => (copiado.value = false), 2500)
 }
 
 onMounted(async () => {

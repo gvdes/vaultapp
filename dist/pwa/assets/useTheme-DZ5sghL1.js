@@ -1,0 +1,1 @@
+import{o as e}from"./runtime-core.esm-bundler-JmlPVij4.js";import{i as t}from"./is-BX4vMxhm.js";import{t as n}from"./index-CiWDiwUj.js";var r=`dga_inv_theme`;function i(){return{theme:e(()=>t.isActive?`dark`:`light`),toggleTheme:()=>{t.set(!t.isActive),n.set(r,t.isActive?`dark`:`light`)}}}export{i as n,r as t};

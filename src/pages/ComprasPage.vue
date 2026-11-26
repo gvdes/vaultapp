@@ -357,11 +357,27 @@ const nuevaAbierta = ref(false)
 
 async function copiarLiga() {
   const url = `${urlBase()}${RUTAS_COMPRAS.nueva}`
-  console.log(url)
+
   try {
-    await navigator.clipboard.writeText(url)
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url)
+    } else {
+      const textarea = document.createElement('textarea')
+      textarea.value = url
+      textarea.style.position = 'fixed'
+      textarea.style.left = '-9999px'
+      document.body.appendChild(textarea)
+      textarea.select()
+
+      const copiado = document.execCommand('copy')
+      textarea.remove()
+
+      if (!copiado) throw new Error('No se pudo copiar')
+    }
+
     toast('Liga copiada: compártela con los líderes de área.')
-  } catch {
+  } catch (error) {
+    console.error('Error al copiar liga:', error)
     toast(`Copia esta liga: ${url}`, 'info')
   }
 }

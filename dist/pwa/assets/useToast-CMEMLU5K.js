@@ -1,0 +1,1 @@
+import{u as e}from"./index-CiWDiwUj.js";var t={success:`positive`,error:`negative`,info:`primary`},n={success:`check_circle`,error:`error`,info:`info`};function r(){return(r,i=`success`)=>{e.create({message:r,color:t[i],icon:n[i],position:`bottom-right`,timeout:3500})}}export{r as t};
