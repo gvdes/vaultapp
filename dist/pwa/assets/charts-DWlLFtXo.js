@@ -1,0 +1,1 @@
+import{Ka as e}from"./index-DtseLf7G.js";import{a as t,n}from"./chart-Coj4O-ov.js";var r=e(()=>{n.register(...t),n.defaults.font.family=`"Nunito", ui-sans-serif, system-ui, sans-serif`,n.defaults.maintainAspectRatio=!1});export{r as default};

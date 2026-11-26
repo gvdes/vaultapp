@@ -1,0 +1,1 @@
+var e=`h-9 w-full rounded-lg border border-border bg-bg px-2.5 text-[13px] text-text outline-none ring-vz-blue/30 placeholder:text-text-soft focus:ring-2`,t=e,n=`${e} h-auto min-h-[72px] py-2 resize-y`;export{t as n,n as r,e as t};
