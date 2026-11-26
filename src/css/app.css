@@ -1,0 +1,242 @@
+/* Tailwind SIN preflight (para no chocar con los estilos base de Quasar): solo tema + utilidades.
+   Las utilidades van SIN capa a propósito: el CSS de Quasar no está en capas y, si lo estuvieran, le ganaría
+   a las utilidades (p. ej. h1 de 6rem, fondo de botones). Sin capa y cargadas después, las utilidades ganan. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css";
+
+/* Modo oscuro por clase .dark en <html> (la sincroniza boot/theme.js con el plugin Dark de Quasar) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+
+  /* Paleta Grupo Vizcarra */
+  --color-vz-blue: #1f5fae;
+  --color-vz-teal: #0e7490;
+  --color-vz-teal-2: #0fa391;
+  --color-vz-ink: #0a2a35;
+  --color-vz-ink-2: #103d4c;
+  --color-vz-gold: #c8a24b;
+  --color-vz-steel: #5b7284;
+  --color-vz-success: #12a66b;
+  --color-vz-warning: #e3a517;
+  --color-vz-danger: #b0413f;
+
+  /* Tokens semánticos (se sobrescriben en .dark más abajo) */
+  --color-bg: #f4f6f8;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f8fafb;
+  --color-border: #e2e8ee;
+  --color-text: #0a2a35;
+  --color-text-muted: #5b7284;
+  --color-text-soft: #7c8b96;
+  --color-primary: #1f5fae;
+  --color-primary-hover: #184b8a;
+  --color-accent: #0e7490;
+  --color-sidebar-bg: #0a2a35;
+  --color-sidebar-text: #cfe0e6;
+  --color-sidebar-text-active: #ffffff;
+  --color-sidebar-border: #103d4c;
+}
+
+:root.dark {
+  --color-bg: #0b1b22;
+  --color-surface: #102530;
+  --color-surface-hover: #14303d;
+  --color-border: #1e3b47;
+  --color-text: #e7eef1;
+  --color-text-muted: #9db3bc;
+  --color-text-soft: #7c8b96;
+  --color-primary: #4b8bd6;
+  --color-primary-hover: #6ba2e0;
+  --color-accent: #2fb6cf;
+  --color-sidebar-bg: #071319;
+  --color-sidebar-text: #9db3bc;
+  --color-sidebar-text-active: #ffffff;
+  --color-sidebar-border: #12252d;
+}
+
+html,
+body,
+#q-app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Quasar pinta su propio fondo/colores en modo oscuro; los dejamos a nuestros tokens */
+body.body--dark {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Preflight mínimo que sí necesitamos (lo que Tailwind daría y Quasar no) */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border: 0 solid var(--color-border);
+}
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+}
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+table {
+  border-collapse: collapse;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+svg {
+  vertical-align: middle;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+/* Quasar define . Con Tailwind () eso PARTE el contenido en varias columnas en cuanto
+   es más alto que el contenedor (Inicio, Sistemas, Compras… se desbordaban hacia la derecha). Una columna nunca debe envolver. */
+.flex.flex-col,
+.flex.flex-col-reverse {
+  flex-wrap: nowrap;
+}
+
+/* Quasar define `.row, .column, .flex { flex-wrap: wrap }`. Con Tailwind (`flex h-full flex-col`) eso PARTE el contenido en varias columnas en cuanto
+   es más alto que el contenedor (Inicio, Sistemas, Compras… se desbordaban hacia la derecha). Una columna nunca debe envolver. */
+.flex.flex-col,
+.flex.flex-col-reverse {
+  flex-wrap: nowrap;
+}
+
+/* Patrón de rejilla muy sutil, opcional, para fondos amplios */
+.bg-grid-subtle {
+  background-image:
+    linear-gradient(to right, currentColor 1px, transparent 1px),
+    linear-gradient(to bottom, currentColor 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: var(--color-text);
+  opacity: 0.05;
+  animation: grid-drift 40s linear infinite;
+}
+
+@keyframes grid-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 64px 64px;
+  }
+}
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fade-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes float-blob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(24px, -18px) scale(1.08);
+  }
+}
+.intro-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(64px);
+  animation: float-blob 14s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-grid-subtle,
+  .animate-fade-in-up,
+  .animate-fade-in-scale,
+  .intro-blob {
+    animation: none !important;
+  }
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+/* Quasar define `.hidden { display: none !important }`, que anula los patrones `hidden md:flex` de Tailwind.
+   Re-declaramos con !important las variantes responsivas que combinamos con `hidden`. */
+@media (min-width: 40rem) {
+  .sm\:flex {
+    display: flex !important;
+  }
+  .sm\:block {
+    display: block !important;
+  }
+}
+@media (min-width: 48rem) {
+  .md\:flex {
+    display: flex !important;
+  }
+  .md\:inline {
+    display: inline !important;
+  }
+  .md\:block {
+    display: block !important;
+  }
+}
+
+/* Impresión de etiquetas / reportes: oculta el shell */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

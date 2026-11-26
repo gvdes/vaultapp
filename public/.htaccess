@@ -1,0 +1,55 @@
+# Apache / LiteSpeed (Hostinger): la app es una SPA con rutas "limpias" (/sistemas, /verificar/equipo/123…).
+# Cualquier ruta que no sea un archivo real debe devolver index.html.
+# Si la app vive en una subcarpeta (p. ej. /inventarios/), cambia RewriteBase y la última regla a esa subcarpeta.
+
+# --- HTTPS obligatorio: quita el "#" de las 3 líneas cuando el certificado SSL ya esté activo en el dominio ---
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} off
+#   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  # La API (PHP + MySQL) vive en /api (carpeta public_html/api con su propio .htaccess): la SPA NUNCA debe capturar /api/*.
+  # Si la app está en una subcarpeta, cambia ^api por ^inventarios/api (o la ruta real de la API).
+  RewriteRule ^api(/|$) - [L]
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# --- Velocidad: comprimir texto (el JS/CSS baja de ~2.8 MB a ~0.6 MB por la red) ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript text/javascript application/json image/svg+xml font/ttf font/otf application/font-woff
+</IfModule>
+
+# --- Velocidad: los archivos de /assets llevan un código (hash) en el nombre, así que se guardan 1 año en el navegador ---
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  # index.html nunca se guarda: así cada versión nueva se ve al instante
+  <FilesMatch "index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header unset Expires
+  </FilesMatch>
+  <FilesMatch "\.(js|css|woff2?|png|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  # Seguridad básica
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(self), microphone=(), geolocation=()"
+</IfModule>
